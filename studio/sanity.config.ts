@@ -15,7 +15,7 @@ import {
   defineLocations,
   type DocumentLocation,
 } from 'sanity/presentation'
-// import {assist} from '@sanity/assist'
+import {assist} from '@sanity/assist'
 
 // Environment variables for project configuration
 const projectId = process.env.SANITY_STUDIO_PROJECT_ID || 'your-projectID'
@@ -137,7 +137,7 @@ export default defineConfig({
     }),
     // Additional plugins for enhanced functionality
     unsplashImageAsset(),
-    // assist(),
+    assist(),
     visionTool(),
   ],
 
