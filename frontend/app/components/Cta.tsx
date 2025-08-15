@@ -16,8 +16,37 @@ type CtaProps = {
 
 export default function CTA({ block }: CtaProps) {
   const pageDestination = block.button?.page?.slug?.current || "home";
-  const { heading, eyebrow, body = [], button, image, video } = block;
+  const { heading, eyebrow, body = [], button, image, video, theme } = block;
+  const {
+    customBackgroundColor,
+    customTextColor,
+    customButtonBgColor,
+    customButtonTextColor,
+  } = theme || {};
+  const themeName = stegaClean(theme?.themeName) || 'light';
 
+  let backgroundColor, textColor, buttonBgColor, buttonTextColor;
+  switch (themeName) {
+    case "dark":
+      backgroundColor = "#22303c";
+      textColor = "#FFFFFF";
+      buttonBgColor = "#FFFFFF";
+      buttonTextColor = "#000000";
+      break;
+    case "custom":
+      backgroundColor = customBackgroundColor?.hex || "#FFFFFF";
+      textColor = customTextColor?.hex || "#000000";
+      buttonBgColor = customButtonBgColor?.hex || "#000000";
+      buttonTextColor = customButtonTextColor?.hex || "#FFFFFF";
+      break;
+    case "light":
+    default:
+      backgroundColor = "#FFFFFF";
+      textColor = "#000000";
+      buttonBgColor = "#000000";
+      buttonTextColor = "#FFFFFF";
+      break;
+  }
 
   let layoutClasses = "";
   const contentAlignment = stegaClean(block.layout?.contentAlignment);
@@ -48,26 +77,31 @@ export default function CTA({ block }: CtaProps) {
   }
 
   return (
-    <div className={cn("flex py-6 min-h-100 my-2", layoutClasses)}>
+    <div
+      className={cn("flex py-6 min-h-100 my-2", layoutClasses)}
+      style={{ backgroundColor, color: textColor }}
+    >
       <div className="flex flex-col gap-6 justify-center">
         <div className="max-w-xl flex flex-col gap-3 ">
-          {eyebrow && (
-            <h2 className="text-sm tracking-tight text-[#3a454a]">{eyebrow}</h2>
-          )}
+          {eyebrow && <h2 className="text-sm tracking-tight opacity-70">{eyebrow}</h2>}
           {heading && (
-            <h2 className="text-3xl font-bold tracking-tight text-black sm:text-4xl mb-4">
+            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl mb-4">
               {heading}
             </h2>
           )}
-          {body && <CustomPortableText value={body as PortableTextBlock[]} />}
+          {body && <CustomPortableText value={body as PortableTextBlock[]} themeName={themeName} customTextColor={textColor} />}
         </div>
 
         <Suspense fallback={null}>
           {button?.label && pageDestination && (
-            <div className="flex items-center gap-x-6 lg:mt-0 lg:flex-shrink-0">
+            <div
+              className="flex items-center gap-x-6 lg:mt-0 lg:flex-shrink-0"
+            >
               <ResolvedLink
                 link={{ linkType: "page", page: pageDestination }}
-                className="rounded-lg flex gap-2 mr-6 items-center bg-black hover:scale-110 py-3 px-6 text-white transition-colors duration-200"
+                className="rounded-lg flex gap-2 mr-6 items-center hover:scale-110 py-3 px-6 transition-colors duration-200"
+                style={{ backgroundColor: buttonBgColor, color: buttonTextColor }}
+
               >
                 {button?.label}
               </ResolvedLink>

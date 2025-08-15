@@ -1,4 +1,6 @@
-# Clean Next.js + Sanity app
+# Simplified Page Building Example for Enterprise Demos
+
+The purpose of this functionality is to give people a visually beautiful/well functioning version of a 
 
 This is a BRANCH of a FORK of the [NextJS + Sanity Starter Template](https://github.com/sanity-io/sanity-template-nextjs-clean) with some extra functionality for Enterprise demos: 
 - more types of page blocks (contact form, announcments list, full width video, etc)
