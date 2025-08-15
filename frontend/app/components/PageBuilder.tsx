@@ -25,10 +25,10 @@ type PageData = {
  */
 
 function RenderSections({
-  pageBuilderSections,
+  sections,
   page,
 }: {
-  pageBuilderSections: PageBuilderSection[];
+  sections: PageBuilderSection[];
   page: GetPageQueryResult;
 }) {
   if (!page) {
@@ -42,7 +42,7 @@ function RenderSections({
         path: `pageBuilder`,
       }).toString()}
     >
-      {pageBuilderSections.map((block: PageBuilderSection, index: number) => (
+      {sections.map((block: PageBuilderSection, index: number) => (
         <BlockRenderer
           key={block._key}
           index={index}
@@ -112,6 +112,6 @@ export default function PageBuilder({ page }: PageBuilderPageProps) {
   }
 
   return pageBuilderSections && pageBuilderSections.length > 0
-    ? <RenderSections pageBuilderSections={pageBuilderSections} page={page} />
+    ? <RenderSections sections={pageBuilderSections} page={page} />
     : <RenderEmptyState page={page} />;
 }

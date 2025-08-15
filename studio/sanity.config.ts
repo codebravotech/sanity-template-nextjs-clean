@@ -15,7 +15,7 @@ import {
   defineLocations,
   type DocumentLocation,
 } from 'sanity/presentation'
-import {assist} from '@sanity/assist'
+// import {assist} from '@sanity/assist'
 
 // Environment variables for project configuration
 const projectId = process.env.SANITY_STUDIO_PROJECT_ID || 'your-projectID'
@@ -47,10 +47,23 @@ function resolveHref(documentType?: string, slug?: string): string | undefined {
 // Main Sanity configuration
 export default defineConfig({
   name: 'default',
-  title: 'Sanity + Next.js Starter Template',
+  title: 'Sanity - Page Builder Example',
 
   projectId,
   dataset,
+  mediaLibrary: {
+    enabled: true,
+  },
+  form: {
+    // Disable the default for image assets
+    image: {
+      assetSources: (sources) => sources.filter((source) => source.name !== 'sanity-default')
+    },
+    // Disable the default for file assets
+    file: {
+      assetSources: (sources) => sources.filter((source) => source.name !== 'sanity-default')
+    }
+  },
 
   plugins: [
     // Presentation tool configuration for Visual Editing
@@ -124,7 +137,7 @@ export default defineConfig({
     }),
     // Additional plugins for enhanced functionality
     unsplashImageAsset(),
-    assist(),
+    // assist(),
     visionTool(),
   ],
 

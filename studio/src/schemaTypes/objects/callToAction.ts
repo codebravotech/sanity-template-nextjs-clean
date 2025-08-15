@@ -1,5 +1,7 @@
 import {defineField, defineType} from 'sanity'
 import {BulbOutlineIcon, ComposeIcon, EditIcon, ImageIcon, CogIcon} from '@sanity/icons'
+import { defineVideoField } from 'sanity/media-library'
+import videoPreviewImage from './VideoPreviewImage'
 
 /**
  * Call to action schema object.  Objects are reusable schema structures document.
@@ -57,9 +59,24 @@ export const callToAction = defineType({
     defineField({
       name: "image",
       type: "image",
+      description: "You can either provide an image or a video, but not both. To provide a video, clear this image field.",
       group: "media",
       options: {
         hotspot: true,
+      },
+      hidden: ({parent}) =>   {
+        return !!parent?.videoBlock?.video
+      },
+    }),
+    defineField({
+      name: "videoBlock",
+      type: 'videoBlock',
+      title: 'Video',
+      description: "You can either provide an image or a video, but not both. To provide an image, clear the video field.",
+      // @ts-ignore
+      group: "media",
+      hidden: ({parent}) =>   {
+        return !!parent?.image
       },
     }),
     defineField({
@@ -86,11 +103,11 @@ export const callToAction = defineType({
           title: "Content Order",
           type: "string",
           initialValue: "textFirst",
-          description: "In the chosen flow direction (horizontal or vertical), does body (rich text and embedded media) or main image first?",
+          description: "In the chosen flow direction (horizontal or vertical), does body (rich text and embedded media) or main media (image or video) come first?",         
           options: {
             list: [
-              {title: "Body then Main Image", value: "textFirst"},
-              {title: "Main Image then Body", value: "mediaFirst"},    
+              {title: "Body then Main Media", value: "textFirst"},
+              {title: "Main Media then Body", value: "mediaFirst"},    
             ],
             layout: "radio",
           },
@@ -103,13 +120,18 @@ export const callToAction = defineType({
     select: {
       title: 'heading',
       image: 'image.asset',
+      playbackId: 'videoBlock.video.asset.metadata.playbacks[0]._id',
+      originalFilename: 'videoBlock.video.asset.originalFilename'
     },
     prepare(selection) {
-      const {title, image} = selection
+      const {title, image, playbackId, originalFilename} = selection
+      const posterUrl = `https://image.mux.com/${playbackId}/thumbnail.jpg`
+
+
       return {
         title: title,
         subtitle: 'Call to Action',
-        media: image || undefined
+        media: image ? image : playbackId ? videoPreviewImage({posterUrl, title, filename: originalFilename}) : undefined
       }
     },
   },

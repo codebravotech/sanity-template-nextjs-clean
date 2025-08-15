@@ -22,7 +22,7 @@ export const link = defineType({
         list: [
           {title: 'URL', value: 'href'},
           {title: 'Page', value: 'page'},
-          {title: 'Post', value: 'post'},
+          // {title: 'Post', value: 'post'},
         ],
         layout: 'radio',
       },

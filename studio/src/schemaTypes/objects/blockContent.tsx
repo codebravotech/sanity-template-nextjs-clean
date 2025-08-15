@@ -68,20 +68,6 @@ export const blockContent = defineType({
                   }),
               }),
               defineField({
-                name: 'post',
-                title: 'Post',
-                type: 'reference',
-                to: [{type: 'post'}],
-                hidden: ({parent}) => parent?.linkType !== 'post',
-                validation: (Rule) =>
-                  Rule.custom((value, context: any) => {
-                    if (context.parent?.linkType === 'post' && !value) {
-                      return 'Post reference is required when Link Type is Post'
-                    }
-                    return true
-                  }),
-              }),
-              defineField({
                 name: 'openInNewTab',
                 title: 'Open in new tab',
                 type: 'boolean',
@@ -98,5 +84,9 @@ export const blockContent = defineType({
         hotspot: true,
       },
     }),
+    defineArrayMember({
+      type: 'videoBlock',
+      title: 'Video',
+    })
   ],
 })

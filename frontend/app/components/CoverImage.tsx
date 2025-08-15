@@ -30,7 +30,7 @@ export default function CoverImage(props: CoverImageProps) {
 
   const dimensions = getImageDimensions(source);
 
-  // We go in order of preference: the direct numeric width and height props, 
+  // We go in order of preference: the direct numberic width and height props, 
   // then the media dimensions based on the viewport size and the two scaling factors (if both are provided), 
   // then the dimensions from the image asset itself as a fallback.
   const imageWidth = widthAsPixels || mediaDimensions.width || dimensions.width;

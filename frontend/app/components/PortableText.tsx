@@ -15,6 +15,7 @@ import {
 } from "next-sanity";
 import cn from "classnames";
 import ResolvedLink from "@/app/components/ResolvedLink";
+import ResponsiveVideo from "./ResponsiveVideo";
 import CoverImage from "./CoverImage";
 
 export default function CustomPortableText({
@@ -24,7 +25,6 @@ export default function CustomPortableText({
   className?: string;
   value: PortableTextBlock[];
 }) {
-
   const components: PortableTextComponents = {
     types: {
       image: ({ value }) => {
@@ -40,6 +40,25 @@ export default function CustomPortableText({
               heightAsViewportPercentage={33}
               className="rounded-xl"
             />
+          </figure>
+        );
+      },
+      videoBlock: ({ value }) => {
+        console.log("VIDEO BLOCK", {value});
+        if (!value?.video?.playbackId) {
+          return null;
+        }
+        const { autoPlay, muted, loop } = value.settings || {};
+
+        return (
+          <figure className="my-8">
+            <ResponsiveVideo
+              video={value.video}
+              autoPlay={muted && autoPlay ? "muted" : false}
+              muted={muted}
+              loop={loop}
+              maxWidthOfViewportAsPercentage={33}
+              />
           </figure>
         );
       },

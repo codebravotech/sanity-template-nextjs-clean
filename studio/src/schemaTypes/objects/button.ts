@@ -6,16 +6,15 @@ export default defineType({
   description: 'The button of the call to action',
   fields: [
     defineField({
-      name: 'buttonText',
-      title: 'Button Text',
+      name: 'label',
+      title: 'Label',
       type: 'string',
     }),
     defineField({
-      name: 'link',
-      title: 'Button Link',
-      type: 'link',
-      options:{collapsible: true, collapsed: false}, 
+      name: 'page',
+      title: 'Links to',
+      type: 'reference',
+      to: [{type: 'page'}],
     }),
   ],
-  options:{collapsible: true}, 
 })

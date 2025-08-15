@@ -1,8 +1,11 @@
 import React from "react";
 
+import Announcements from "./Announcements";
 import Cta from "@/app/components/Cta";
 import Info from "@/app/components/InfoSection";
+import ContactForm from "@/app/components/ContactForm";
 import { dataAttr } from "@/sanity/lib/utils";
+import VideoBlock from "./VideoBlock";
 import { PageBuilderSection } from "@/sanity/lib/types";
 
 type BlocksType = {
@@ -19,6 +22,9 @@ type BlockProps = {
 const Blocks: BlocksType = {
   callToAction: Cta,
   infoSection: Info,
+  announcements: Announcements,
+  videoBlock: VideoBlock,
+  contactForm: ContactForm,
 };
 
 /**

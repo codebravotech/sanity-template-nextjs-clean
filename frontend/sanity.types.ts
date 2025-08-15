@@ -13,6 +13,54 @@
  */
 
 // Source: schema.json
+export type Announcement = {
+  _type: "announcement";
+  category?: "press_releases" | "events" | "stories";
+  title?: string;
+  summary?: string;
+  button?: Button;
+  image?: {
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+    };
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+  };
+  date?: string;
+};
+
+export type Announcements = {
+  _type: "announcements";
+  heading?: string;
+  announcements?: Array<{
+    _key: string;
+  } & Announcement>;
+};
+
+export type Link = {
+  _type: "link";
+  linkType?: "href" | "page";
+  href?: string;
+  page?: {
+    _ref: string;
+    _type: "reference";
+    _weak?: boolean;
+    [internalGroqTypeReferenceTo]?: "page";
+  };
+  post?: {
+    _ref: string;
+    _type: "reference";
+    _weak?: boolean;
+    [internalGroqTypeReferenceTo]?: "post";
+  };
+  openInNewTab?: boolean;
+};
+
 export type CallToAction = {
   _type: "callToAction";
   eyebrow?: string;
@@ -35,12 +83,6 @@ export type CallToAction = {
         _weak?: boolean;
         [internalGroqTypeReferenceTo]?: "page";
       };
-      post?: {
-        _ref: string;
-        _type: "reference";
-        _weak?: boolean;
-        [internalGroqTypeReferenceTo]?: "post";
-      };
       openInNewTab?: boolean;
       _type: "link";
       _key: string;
@@ -60,7 +102,9 @@ export type CallToAction = {
     crop?: SanityImageCrop;
     _type: "image";
     _key: string;
-  }>;
+  } | {
+    _key: string;
+  } & VideoBlock>;
   button?: Button;
   image?: {
     asset?: {
@@ -74,9 +118,32 @@ export type CallToAction = {
     crop?: SanityImageCrop;
     _type: "image";
   };
+  videoBlock?: VideoBlock;
   layout?: {
     orientation?: "horizontal" | "vertical";
     contentAlignment?: "textFirst" | "mediaFirst";
+  };
+};
+
+export type VideoBlock = {
+  _type: "videoBlock";
+  video?: SanityVideo;
+  settings?: {
+    loop?: boolean;
+    muted?: boolean;
+    autoPlay?: boolean;
+    title?: string;
+  };
+};
+
+export type Button = {
+  _type: "button";
+  label?: string;
+  page?: {
+    _ref: string;
+    _type: "reference";
+    _weak?: boolean;
+    [internalGroqTypeReferenceTo]?: "page";
   };
 };
 
@@ -102,12 +169,6 @@ export type InfoSection = {
         _weak?: boolean;
         [internalGroqTypeReferenceTo]?: "page";
       };
-      post?: {
-        _ref: string;
-        _type: "reference";
-        _weak?: boolean;
-        [internalGroqTypeReferenceTo]?: "post";
-      };
       openInNewTab?: boolean;
       _type: "link";
       _key: string;
@@ -127,7 +188,9 @@ export type InfoSection = {
     crop?: SanityImageCrop;
     _type: "image";
     _key: string;
-  }>;
+  } | {
+    _key: string;
+  } & VideoBlock>;
 };
 
 export type BlockContentTextOnly = Array<{
@@ -167,12 +230,6 @@ export type BlockContent = Array<{
       _weak?: boolean;
       [internalGroqTypeReferenceTo]?: "page";
     };
-    post?: {
-      _ref: string;
-      _type: "reference";
-      _weak?: boolean;
-      [internalGroqTypeReferenceTo]?: "post";
-    };
     openInNewTab?: boolean;
     _type: "link";
     _key: string;
@@ -192,31 +249,21 @@ export type BlockContent = Array<{
   crop?: SanityImageCrop;
   _type: "image";
   _key: string;
-}>;
+} | {
+  _key: string;
+} & VideoBlock>;
 
-export type Button = {
-  _type: "button";
-  buttonText?: string;
-  link?: Link;
-};
-
-export type Link = {
-  _type: "link";
-  linkType?: "href" | "page" | "post";
-  href?: string;
-  page?: {
-    _ref: string;
-    _type: "reference";
-    _weak?: boolean;
-    [internalGroqTypeReferenceTo]?: "page";
-  };
-  post?: {
-    _ref: string;
-    _type: "reference";
-    _weak?: boolean;
-    [internalGroqTypeReferenceTo]?: "post";
-  };
-  openInNewTab?: boolean;
+export type ContactForm = {
+  _id: string;
+  _type: "contactForm";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  heading: string;
+  body?: BlockContentTextOnly;
+  successMessage?: BlockContentTextOnly;
+  requiredFields: Array<string>;
+  optionalFields?: Array<string>;
 };
 
 export type Settings = {
@@ -274,23 +321,6 @@ export type Settings = {
   };
 };
 
-export type Page = {
-  _id: string;
-  _type: "page";
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  name: string;
-  slug: Slug;
-  heading: string;
-  subheading?: string;
-  pageBuilder?: Array<{
-    _key: string;
-  } & CallToAction | {
-    _key: string;
-  } & InfoSection>;
-};
-
 export type Post = {
   _id: string;
   _type: "post";
@@ -346,125 +376,77 @@ export type Person = {
   };
 };
 
-export type SanityAssistInstructionTask = {
-  _type: "sanity.assist.instructionTask";
-  path?: string;
-  instructionKey?: string;
-  started?: string;
-  updated?: string;
-  info?: string;
-};
-
-export type SanityAssistTaskStatus = {
-  _type: "sanity.assist.task.status";
-  tasks?: Array<{
-    _key: string;
-  } & SanityAssistInstructionTask>;
-};
-
-export type SanityAssistSchemaTypeAnnotations = {
-  _type: "sanity.assist.schemaType.annotations";
-  title?: string;
-  fields?: Array<{
-    _key: string;
-  } & SanityAssistSchemaTypeField>;
-};
-
-export type SanityAssistOutputType = {
-  _type: "sanity.assist.output.type";
-  type?: string;
-};
-
-export type SanityAssistOutputField = {
-  _type: "sanity.assist.output.field";
-  path?: string;
-};
-
-export type SanityAssistInstructionContext = {
-  _type: "sanity.assist.instruction.context";
-  reference: {
-    _ref: string;
-    _type: "reference";
-    _weak?: boolean;
-    [internalGroqTypeReferenceTo]?: "assist.instruction.context";
-  };
-};
-
-export type AssistInstructionContext = {
+export type Page = {
   _id: string;
-  _type: "assist.instruction.context";
+  _type: "page";
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
-  title?: string;
-  context?: Array<{
-    children?: Array<{
-      marks?: Array<string>;
-      text?: string;
-      _type: "span";
-      _key: string;
-    }>;
-    style?: "normal";
-    listItem?: never;
-    markDefs?: null;
-    level?: number;
-    _type: "block";
+  name: string;
+  slug: Slug;
+  heading: string;
+  subheading?: string;
+  pageBuilder?: Array<{
+    _key: string;
+  } & CallToAction | {
+    _key: string;
+  } & InfoSection | {
+    _key: string;
+  } & VideoBlock | {
+    _key: string;
+  } & Announcements | {
+    heading: string;
+    body?: BlockContentTextOnly;
+    successMessage?: BlockContentTextOnly;
+    requiredFields: Array<string>;
+    optionalFields?: Array<string>;
+    _type: "contactForm";
     _key: string;
   }>;
 };
 
-export type SanityAssistInstructionUserInput = {
-  _type: "sanity.assist.instruction.userInput";
-  message: string;
-  description?: string;
+export type SanityVideo = {
+  _type: "sanity.video";
+  asset?: {
+    _ref: string;
+    _type: "reference";
+    _weak?: boolean;
+    [internalGroqTypeReferenceTo]?: "sanity.videoAsset";
+  };
+  media?: unknown;
 };
 
-export type SanityAssistInstructionPrompt = Array<{
-  children?: Array<{
-    marks?: Array<string>;
-    text?: string;
-    _type: "span";
-    _key: string;
-  } | {
-    _key: string;
-  } & SanityAssistInstructionFieldRef | {
-    _key: string;
-  } & SanityAssistInstructionContext | {
-    _key: string;
-  } & SanityAssistInstructionUserInput>;
-  style?: "normal";
-  listItem?: never;
-  markDefs?: null;
-  level?: number;
-  _type: "block";
-  _key: string;
-}>;
-
-export type SanityAssistInstructionFieldRef = {
-  _type: "sanity.assist.instruction.fieldRef";
-  path?: string;
-};
-
-export type SanityAssistInstruction = {
-  _type: "sanity.assist.instruction";
-  prompt?: SanityAssistInstructionPrompt;
-  icon?: string;
+export type SanityVideoAsset = {
+  _id: string;
+  _type: "sanity.videoAsset";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  originalFilename?: string;
+  label?: string;
   title?: string;
-  userId?: string;
-  createdById?: string;
-  output?: Array<{
-    _key: string;
-  } & SanityAssistOutputField | {
-    _key: string;
-  } & SanityAssistOutputType>;
+  description?: string;
+  altText?: string;
+  creditLine?: string;
+  metadata?: SanityVideoMetadata;
+  sha1hash?: string;
+  extension?: string;
+  mimeType?: string;
+  size?: number;
+  assetId?: string;
+  uploadId?: string;
+  path?: string;
+  url?: string;
 };
 
-export type SanityAssistSchemaTypeField = {
-  _type: "sanity.assist.schemaType.field";
-  path?: string;
-  instructions?: Array<{
-    _key: string;
-  } & SanityAssistInstruction>;
+export type SanityVideoMetadata = {
+  _type: "sanity.videoMetadata";
+  duration?: number;
+  framerate?: number;
+  aspectRatio?: number;
+  hasAudio?: boolean;
+  codec?: string;
+  bitrate?: number;
 };
 
 export type SanityImagePaletteSwatch = {
@@ -585,7 +567,7 @@ export type SanityAssetSourceData = {
   url?: string;
 };
 
-export type AllSanitySchemaTypes = CallToAction | InfoSection | BlockContentTextOnly | BlockContent | Button | Link | Settings | Page | Post | Person | SanityAssistInstructionTask | SanityAssistTaskStatus | SanityAssistSchemaTypeAnnotations | SanityAssistOutputType | SanityAssistOutputField | SanityAssistInstructionContext | AssistInstructionContext | SanityAssistInstructionUserInput | SanityAssistInstructionPrompt | SanityAssistInstructionFieldRef | SanityAssistInstruction | SanityAssistSchemaTypeField | SanityImagePaletteSwatch | SanityImagePalette | SanityImageDimensions | SanityImageHotspot | SanityImageCrop | SanityFileAsset | SanityImageAsset | SanityImageMetadata | Geopoint | Slug | SanityAssetSourceData;
+export type AllSanitySchemaTypes = Announcement | Announcements | Link | CallToAction | VideoBlock | Button | InfoSection | BlockContentTextOnly | BlockContent | ContactForm | Settings | Post | Person | Page | SanityVideo | SanityVideoAsset | SanityVideoMetadata | SanityImagePaletteSwatch | SanityImagePalette | SanityImageDimensions | SanityImageHotspot | SanityImageCrop | SanityFileAsset | SanityImageAsset | SanityImageMetadata | Geopoint | Slug | SanityAssetSourceData;
 export declare const internalGroqTypeReferenceTo: unique symbol;
 // Source: ./sanity/lib/queries.ts
 // Variable: settingsQuery
@@ -645,7 +627,7 @@ export type SettingsQueryResult = {
   };
 } | null;
 // Variable: getPageQuery
-// Query: *[_type == 'page' && slug.current == $slug][0]{    _id,    _type,    name,    slug,    heading,    subheading,    "pageBuilder": pageBuilder[]{      ...,      _type == "callToAction" => {        ...,        button {          ...,            link {      ...,        _type == "link" => {    "page": page->slug.current,    "post": post->slug.current  }      }        }      },      _type == "infoSection" => {        content[]{          ...,          markDefs[]{            ...,              _type == "link" => {    "page": page->slug.current,    "post": post->slug.current  }          }        }      },    },  }
+// Query: *[_type == 'page' && slug.current == $slug][0]{    _id,    _type,    name,    slug,    heading,    subheading,    "pageBuilder": pageBuilder[]{      ...,      _type == "videoBlock" => {        ...,          "video": {    "metadata": video.asset->metadata,    "playbackId": video.asset->metadata.playbacks[0]._id,    "aspectRatio": video.asset->metadata.aspectRatio,    "originalFilename": video.asset->originalFilename,    "duration": video.asset->metadata.duration,    "assetId": video.asset->_id  }       },      _type == "callToAction" => {          link {      ...,        _type == "link" => {    "page": page->slug.current,    "post": post->slug.current  }      },        button {          ...,          page->        },          "video": {    "metadata": videoBlock.video.asset->metadata,    "playbackId": videoBlock.video.asset->metadata.playbacks[0]._id,    "aspectRatio": videoBlock.video.asset->metadata.aspectRatio,    "originalFilename": videoBlock.video.asset->originalFilename,    "duration": videoBlock.video.asset->metadata.duration,    "assetId": videoBlock.video.asset->_id  },        body[]{          ...,          _type == "videoBlock" => {            ...,              "video": {    "metadata": video.asset->metadata,    "playbackId": video.asset->metadata.playbacks[0]._id,    "aspectRatio": video.asset->metadata.aspectRatio,    "originalFilename": video.asset->originalFilename,    "duration": video.asset->metadata.duration,    "assetId": video.asset->_id  }           }        }      },      _type == "announcements" => {        announcements[] {          ...,          button {            ...,            page->          }        }      },      _type == "contactForm" => {        ...,      },      _type == "infoSection" => {        content[]{          ...,            "video": {    "metadata": video.asset->metadata,    "playbackId": video.asset->metadata.playbacks[0]._id,    "aspectRatio": video.asset->metadata.aspectRatio,    "originalFilename": video.asset->originalFilename,    "duration": video.asset->metadata.duration,    "assetId": video.asset->_id  },          markDefs[]{            ...,              _type == "link" => {    "page": page->slug.current,    "post": post->slug.current  }          }        }      },    },  }
 export type GetPageQueryResult = {
   _id: string;
   _type: "page";
@@ -655,10 +637,66 @@ export type GetPageQueryResult = {
   subheading: string | null;
   pageBuilder: Array<{
     _key: string;
+    _type: "announcements";
+    heading?: string;
+    announcements: Array<{
+      _key: string;
+      _type: "announcement";
+      category?: "events" | "press_releases" | "stories";
+      title?: string;
+      summary?: string;
+      button: {
+        _type: "button";
+        label?: string;
+        page: {
+          _id: string;
+          _type: "page";
+          _createdAt: string;
+          _updatedAt: string;
+          _rev: string;
+          name: string;
+          slug: Slug;
+          heading: string;
+          subheading?: string;
+          pageBuilder?: Array<{
+            _key: string;
+          } & Announcements | {
+            _key: string;
+          } & CallToAction | {
+            _key: string;
+          } & InfoSection | {
+            _key: string;
+          } & VideoBlock | {
+            heading: string;
+            body?: BlockContentTextOnly;
+            successMessage?: BlockContentTextOnly;
+            requiredFields: Array<string>;
+            optionalFields?: Array<string>;
+            _type: "contactForm";
+            _key: string;
+          }>;
+        } | null;
+      } | null;
+      image?: {
+        asset?: {
+          _ref: string;
+          _type: "reference";
+          _weak?: boolean;
+          [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+        };
+        media?: unknown;
+        hotspot?: SanityImageHotspot;
+        crop?: SanityImageCrop;
+        _type: "image";
+      };
+      date?: string;
+    }> | null;
+  } | {
+    _key: string;
     _type: "callToAction";
     eyebrow?: string;
     heading: string;
-    body?: Array<{
+    body: Array<{
       children?: Array<{
         marks?: Array<string>;
         text?: string;
@@ -675,12 +713,6 @@ export type GetPageQueryResult = {
           _type: "reference";
           _weak?: boolean;
           [internalGroqTypeReferenceTo]?: "page";
-        };
-        post?: {
-          _ref: string;
-          _type: "reference";
-          _weak?: boolean;
-          [internalGroqTypeReferenceTo]?: "post";
         };
         openInNewTab?: boolean;
         _type: "link";
@@ -701,17 +733,54 @@ export type GetPageQueryResult = {
       crop?: SanityImageCrop;
       _type: "image";
       _key: string;
-    }>;
+    } | {
+      _key: string;
+      _type: "videoBlock";
+      video: {
+        metadata: SanityVideoMetadata | null;
+        playbackId: null;
+        aspectRatio: number | null;
+        originalFilename: string | null;
+        duration: number | null;
+        assetId: string | null;
+      };
+      settings?: {
+        loop?: boolean;
+        muted?: boolean;
+        autoPlay?: boolean;
+        title?: string;
+      };
+    }> | null;
     button: {
       _type: "button";
-      buttonText?: string;
-      link: {
-        _type: "link";
-        linkType?: "href" | "page" | "post";
-        href?: string;
-        page: string | null;
-        post: string | null;
-        openInNewTab?: boolean;
+      label?: string;
+      page: {
+        _id: string;
+        _type: "page";
+        _createdAt: string;
+        _updatedAt: string;
+        _rev: string;
+        name: string;
+        slug: Slug;
+        heading: string;
+        subheading?: string;
+        pageBuilder?: Array<{
+          _key: string;
+        } & Announcements | {
+          _key: string;
+        } & CallToAction | {
+          _key: string;
+        } & InfoSection | {
+          _key: string;
+        } & VideoBlock | {
+          heading: string;
+          body?: BlockContentTextOnly;
+          successMessage?: BlockContentTextOnly;
+          requiredFields: Array<string>;
+          optionalFields?: Array<string>;
+          _type: "contactForm";
+          _key: string;
+        }>;
       } | null;
     } | null;
     image?: {
@@ -726,10 +795,28 @@ export type GetPageQueryResult = {
       crop?: SanityImageCrop;
       _type: "image";
     };
+    videoBlock?: VideoBlock;
     layout?: {
       orientation?: "horizontal" | "vertical";
       contentAlignment?: "mediaFirst" | "textFirst";
     };
+    link: null;
+    video: {
+      metadata: SanityVideoMetadata | null;
+      playbackId: null;
+      aspectRatio: number | null;
+      originalFilename: string | null;
+      duration: number | null;
+      assetId: string | null;
+    };
+  } | {
+    heading: string;
+    body?: BlockContentTextOnly;
+    successMessage?: BlockContentTextOnly;
+    requiredFields: Array<string>;
+    optionalFields?: Array<string>;
+    _type: "contactForm";
+    _key: string;
   } | {
     _key: string;
     _type: "infoSection";
@@ -748,14 +835,22 @@ export type GetPageQueryResult = {
         linkType?: "href" | "page" | "post";
         href?: string;
         page: string | null;
-        post: string | null;
         openInNewTab?: boolean;
         _type: "link";
         _key: string;
+        post: null;
       }> | null;
       level?: number;
       _type: "block";
       _key: string;
+      video: {
+        metadata: null;
+        playbackId: null;
+        aspectRatio: null;
+        originalFilename: null;
+        duration: null;
+        assetId: null;
+      };
     } | {
       asset?: {
         _ref: string;
@@ -768,8 +863,51 @@ export type GetPageQueryResult = {
       crop?: SanityImageCrop;
       _type: "image";
       _key: string;
+      video: {
+        metadata: null;
+        playbackId: null;
+        aspectRatio: null;
+        originalFilename: null;
+        duration: null;
+        assetId: null;
+      };
+      markDefs: null;
+    } | {
+      _key: string;
+      _type: "videoBlock";
+      video: {
+        metadata: SanityVideoMetadata | null;
+        playbackId: null;
+        aspectRatio: number | null;
+        originalFilename: string | null;
+        duration: number | null;
+        assetId: string | null;
+      };
+      settings?: {
+        loop?: boolean;
+        muted?: boolean;
+        autoPlay?: boolean;
+        title?: string;
+      };
       markDefs: null;
     }> | null;
+  } | {
+    _key: string;
+    _type: "videoBlock";
+    video: {
+      metadata: SanityVideoMetadata | null;
+      playbackId: null;
+      aspectRatio: number | null;
+      originalFilename: string | null;
+      duration: number | null;
+      assetId: string | null;
+    };
+    settings?: {
+      loop?: boolean;
+      muted?: boolean;
+      autoPlay?: boolean;
+      title?: string;
+    };
   }> | null;
 } | null;
 // Variable: sitemapData
@@ -864,7 +1002,7 @@ export type MorePostsQueryResult = Array<{
   } | null;
 }>;
 // Variable: postQuery
-// Query: *[_type == "post" && slug.current == $slug] [0] {    content[]{    ...,    markDefs[]{      ...,        _type == "link" => {    "page": page->slug.current,    "post": post->slug.current  }    }  },      _id,  "status": select(_originalId in path("drafts.**") => "draft", "published"),  "title": coalesce(title, "Untitled"),  "slug": slug.current,  excerpt,  coverImage,  "date": coalesce(date, _updatedAt),  "author": author->{firstName, lastName, picture},  }
+// Query: *[_type == "post" && slug.current == $slug] [0] {    content[]{    ...,      "video": {    "metadata": video.asset->metadata,    "playbackId": video.asset->metadata.playbacks[0]._id,    "aspectRatio": video.asset->metadata.aspectRatio,    "originalFilename": video.asset->originalFilename,    "duration": video.asset->metadata.duration,    "assetId": video.asset->_id  },    markDefs[]{      ...,        _type == "link" => {    "page": page->slug.current,    "post": post->slug.current  }    }  },      _id,  "status": select(_originalId in path("drafts.**") => "draft", "published"),  "title": coalesce(title, "Untitled"),  "slug": slug.current,  excerpt,  coverImage,  "date": coalesce(date, _updatedAt),  "author": author->{firstName, lastName, picture},  }
 export type PostQueryResult = {
   content: Array<{
     children?: Array<{
@@ -879,14 +1017,22 @@ export type PostQueryResult = {
       linkType?: "href" | "page" | "post";
       href?: string;
       page: string | null;
-      post: string | null;
       openInNewTab?: boolean;
       _type: "link";
       _key: string;
+      post: null;
     }> | null;
     level?: number;
     _type: "block";
     _key: string;
+    video: {
+      metadata: null;
+      playbackId: null;
+      aspectRatio: null;
+      originalFilename: null;
+      duration: null;
+      assetId: null;
+    };
   } | {
     asset?: {
       _ref: string;
@@ -899,6 +1045,32 @@ export type PostQueryResult = {
     crop?: SanityImageCrop;
     _type: "image";
     _key: string;
+    video: {
+      metadata: null;
+      playbackId: null;
+      aspectRatio: null;
+      originalFilename: null;
+      duration: null;
+      assetId: null;
+    };
+    markDefs: null;
+  } | {
+    _key: string;
+    _type: "videoBlock";
+    video: {
+      metadata: SanityVideoMetadata | null;
+      playbackId: null;
+      aspectRatio: number | null;
+      originalFilename: string | null;
+      duration: number | null;
+      assetId: string | null;
+    };
+    settings?: {
+      loop?: boolean;
+      muted?: boolean;
+      autoPlay?: boolean;
+      title?: string;
+    };
     markDefs: null;
   }> | null;
   _id: string;
@@ -954,11 +1126,11 @@ import "@sanity/client";
 declare module "@sanity/client" {
   interface SanityQueries {
     "*[_type == \"settings\"][0]": SettingsQueryResult;
-    "\n  *[_type == 'page' && slug.current == $slug][0]{\n    _id,\n    _type,\n    name,\n    slug,\n    heading,\n    subheading,\n    \"pageBuilder\": pageBuilder[]{\n      ...,\n      _type == \"callToAction\" => {\n        ...,\n        button {\n          ...,\n          \n  link {\n      ...,\n      \n  _type == \"link\" => {\n    \"page\": page->slug.current,\n    \"post\": post->slug.current\n  }\n\n      }\n\n        }\n      },\n      _type == \"infoSection\" => {\n        content[]{\n          ...,\n          markDefs[]{\n            ...,\n            \n  _type == \"link\" => {\n    \"page\": page->slug.current,\n    \"post\": post->slug.current\n  }\n\n          }\n        }\n      },\n    },\n  }\n": GetPageQueryResult;
+    "\n  *[_type == 'page' && slug.current == $slug][0]{\n    _id,\n    _type,\n    name,\n    slug,\n    heading,\n    subheading,\n    \"pageBuilder\": pageBuilder[]{\n      ...,\n      _type == \"videoBlock\" => {\n        ...,\n        \n  \"video\": {\n    \"metadata\": video.asset->metadata,\n    \"playbackId\": video.asset->metadata.playbacks[0]._id,\n    \"aspectRatio\": video.asset->metadata.aspectRatio,\n    \"originalFilename\": video.asset->originalFilename,\n    \"duration\": video.asset->metadata.duration,\n    \"assetId\": video.asset->_id\n  }\n \n      },\n      _type == \"callToAction\" => {\n        \n  link {\n      ...,\n      \n  _type == \"link\" => {\n    \"page\": page->slug.current,\n    \"post\": post->slug.current\n  }\n\n      }\n,\n        button {\n          ...,\n          page->\n        },\n        \n  \"video\": {\n    \"metadata\": videoBlock.video.asset->metadata,\n    \"playbackId\": videoBlock.video.asset->metadata.playbacks[0]._id,\n    \"aspectRatio\": videoBlock.video.asset->metadata.aspectRatio,\n    \"originalFilename\": videoBlock.video.asset->originalFilename,\n    \"duration\": videoBlock.video.asset->metadata.duration,\n    \"assetId\": videoBlock.video.asset->_id\n  }\n,\n        body[]{\n          ...,\n          _type == \"videoBlock\" => {\n            ...,\n            \n  \"video\": {\n    \"metadata\": video.asset->metadata,\n    \"playbackId\": video.asset->metadata.playbacks[0]._id,\n    \"aspectRatio\": video.asset->metadata.aspectRatio,\n    \"originalFilename\": video.asset->originalFilename,\n    \"duration\": video.asset->metadata.duration,\n    \"assetId\": video.asset->_id\n  }\n \n          }\n        }\n      },\n      _type == \"announcements\" => {\n        announcements[] {\n          ...,\n          button {\n            ...,\n            page->\n          }\n        }\n      },\n      _type == \"contactForm\" => {\n        ...,\n      },\n      _type == \"infoSection\" => {\n        content[]{\n          ...,\n          \n  \"video\": {\n    \"metadata\": video.asset->metadata,\n    \"playbackId\": video.asset->metadata.playbacks[0]._id,\n    \"aspectRatio\": video.asset->metadata.aspectRatio,\n    \"originalFilename\": video.asset->originalFilename,\n    \"duration\": video.asset->metadata.duration,\n    \"assetId\": video.asset->_id\n  }\n,\n          markDefs[]{\n            ...,\n            \n  _type == \"link\" => {\n    \"page\": page->slug.current,\n    \"post\": post->slug.current\n  }\n\n          }\n        }\n      },\n    },\n  }\n": GetPageQueryResult;
     "\n  *[_type == \"page\" || _type == \"post\" && defined(slug.current)] | order(_type asc) {\n    \"slug\": slug.current,\n    _type,\n    _updatedAt,\n  }\n": SitemapDataResult;
     "\n  *[_type == \"post\" && defined(slug.current)] | order(date desc, _updatedAt desc) {\n    \n  _id,\n  \"status\": select(_originalId in path(\"drafts.**\") => \"draft\", \"published\"),\n  \"title\": coalesce(title, \"Untitled\"),\n  \"slug\": slug.current,\n  excerpt,\n  coverImage,\n  \"date\": coalesce(date, _updatedAt),\n  \"author\": author->{firstName, lastName, picture},\n\n  }\n": AllPostsQueryResult;
     "\n  *[_type == \"post\" && _id != $skip && defined(slug.current)] | order(date desc, _updatedAt desc) [0...$limit] {\n    \n  _id,\n  \"status\": select(_originalId in path(\"drafts.**\") => \"draft\", \"published\"),\n  \"title\": coalesce(title, \"Untitled\"),\n  \"slug\": slug.current,\n  excerpt,\n  coverImage,\n  \"date\": coalesce(date, _updatedAt),\n  \"author\": author->{firstName, lastName, picture},\n\n  }\n": MorePostsQueryResult;
-    "\n  *[_type == \"post\" && slug.current == $slug] [0] {\n    content[]{\n    ...,\n    markDefs[]{\n      ...,\n      \n  _type == \"link\" => {\n    \"page\": page->slug.current,\n    \"post\": post->slug.current\n  }\n\n    }\n  },\n    \n  _id,\n  \"status\": select(_originalId in path(\"drafts.**\") => \"draft\", \"published\"),\n  \"title\": coalesce(title, \"Untitled\"),\n  \"slug\": slug.current,\n  excerpt,\n  coverImage,\n  \"date\": coalesce(date, _updatedAt),\n  \"author\": author->{firstName, lastName, picture},\n\n  }\n": PostQueryResult;
+    "\n  *[_type == \"post\" && slug.current == $slug] [0] {\n    content[]{\n    ...,\n    \n  \"video\": {\n    \"metadata\": video.asset->metadata,\n    \"playbackId\": video.asset->metadata.playbacks[0]._id,\n    \"aspectRatio\": video.asset->metadata.aspectRatio,\n    \"originalFilename\": video.asset->originalFilename,\n    \"duration\": video.asset->metadata.duration,\n    \"assetId\": video.asset->_id\n  }\n,\n    markDefs[]{\n      ...,\n      \n  _type == \"link\" => {\n    \"page\": page->slug.current,\n    \"post\": post->slug.current\n  }\n\n    }\n  },\n    \n  _id,\n  \"status\": select(_originalId in path(\"drafts.**\") => \"draft\", \"published\"),\n  \"title\": coalesce(title, \"Untitled\"),\n  \"slug\": slug.current,\n  excerpt,\n  coverImage,\n  \"date\": coalesce(date, _updatedAt),\n  \"author\": author->{firstName, lastName, picture},\n\n  }\n": PostQueryResult;
     "\n  *[_type == \"post\" && defined(slug.current)]\n  {\"slug\": slug.current}\n": PostPagesSlugsResult;
     "\n  *[_type == \"page\" && defined(slug.current)]\n  {\"slug\": slug.current}\n": PagesSlugsResult;
   }

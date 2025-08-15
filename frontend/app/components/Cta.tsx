@@ -1,23 +1,23 @@
 import { Suspense } from "react";
 
 import ResolvedLink from "@/app/components/ResolvedLink";
-import PortableText from "./PortableText";
+import CustomPortableText from "./PortableText";
 import { PortableTextBlock } from "next-sanity";
 import CoverImage from "./CoverImage";
 import cn from "classnames";
 import { stegaClean } from "@sanity/client/stega";
+import ResponsiveVideo from "./ResponsiveVideo";
 import { ExtractPageBuilderType } from "@/sanity/lib/types";
 
 type CtaProps = {
   block: ExtractPageBuilderType<"callToAction">;
   index: number;
-  // Needed if you want to createDataAttributes to do non-text overlays in Presentation (Visual Editing)
-  pageType: string;
-  pageId: string;
 };
 
 export default function CTA({ block }: CtaProps) {
-  const { heading, eyebrow, body = [], button, image } = block;
+  const pageDestination = block.button?.page?.slug?.current || "home";
+  const { heading, eyebrow, body = [], button, image, video } = block;
+
 
   let layoutClasses = "";
   const contentAlignment = stegaClean(block.layout?.contentAlignment);
@@ -59,17 +59,17 @@ export default function CTA({ block }: CtaProps) {
               {heading}
             </h2>
           )}
-          {body && <PortableText value={body as PortableTextBlock[]} />}
+          {body && <CustomPortableText value={body as PortableTextBlock[]} />}
         </div>
 
         <Suspense fallback={null}>
-          {button?.buttonText && button?.link && (
+          {button?.label && pageDestination && (
             <div className="flex items-center gap-x-6 lg:mt-0 lg:flex-shrink-0">
               <ResolvedLink
-                link={button?.link}
+                link={{ linkType: "page", page: pageDestination }}
                 className="rounded-lg flex gap-2 mr-6 items-center bg-black hover:scale-110 py-3 px-6 text-white transition-colors duration-200"
               >
-                {button?.buttonText}
+                {button?.label}
               </ResolvedLink>
             </div>
           )}
@@ -83,6 +83,18 @@ export default function CTA({ block }: CtaProps) {
           className="rounded-xl"
         />
       )}
+      {video &&
+        block.video.playbackId &&
+        block.video.aspectRatio &&
+        block.video.originalFilename && (
+          <ResponsiveVideo
+            video={block.video as any}
+            autoPlay={true}
+            muted={true}
+            loop={true}
+            maxWidthOfViewportAsPercentage={50}
+          />
+        )}
     </div>
   );
 }

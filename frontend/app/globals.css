@@ -1,5 +1,11 @@
 @import "tailwindcss";
 
+.embedded_video_no_controls {
+  mux-player {
+    --controls: none;
+  }
+}
+
 @plugin "@tailwindcss/typography";
 
 @utility container {

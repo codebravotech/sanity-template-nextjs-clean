@@ -13,6 +13,28 @@ const postFields = /* groq */ `
   "author": author->{firstName, lastName, picture},
 `;
 
+const videoBlockFields = /* groq */  `
+  "video": {
+    "metadata": videoBlock.video.asset->metadata,
+    "playbackId": videoBlock.video.asset->metadata.playbacks[0]._id,
+    "aspectRatio": videoBlock.video.asset->metadata.aspectRatio,
+    "originalFilename": videoBlock.video.asset->originalFilename,
+    "duration": videoBlock.video.asset->metadata.duration,
+    "assetId": videoBlock.video.asset->_id
+  }
+`
+
+const videoFields = /* groq */ `
+  "video": {
+    "metadata": video.asset->metadata,
+    "playbackId": video.asset->metadata.playbacks[0]._id,
+    "aspectRatio": video.asset->metadata.aspectRatio,
+    "originalFilename": video.asset->originalFilename,
+    "duration": video.asset->metadata.duration,
+    "assetId": video.asset->_id
+  }
+`
+
 const linkReference = /* groq */ `
   _type == "link" => {
     "page": page->slug.current,
@@ -37,16 +59,41 @@ export const getPageQuery = defineQuery(`
     subheading,
     "pageBuilder": pageBuilder[]{
       ...,
-      _type == "callToAction" => {
+      _type == "videoBlock" => {
         ...,
+        ${videoFields} 
+      },
+      _type == "callToAction" => {
+        ${linkFields},
         button {
           ...,
-          ${linkFields}
+          page->
+        },
+        ${videoBlockFields},
+        body[]{
+          ...,
+          _type == "videoBlock" => {
+            ...,
+            ${videoFields} 
+          }
         }
+      },
+      _type == "announcements" => {
+        announcements[] {
+          ...,
+          button {
+            ...,
+            page->
+          }
+        }
+      },
+      _type == "contactForm" => {
+        ...,
       },
       _type == "infoSection" => {
         content[]{
           ...,
+          ${videoFields},
           markDefs[]{
             ...,
             ${linkReference}
@@ -81,6 +128,7 @@ export const postQuery = defineQuery(`
   *[_type == "post" && slug.current == $slug] [0] {
     content[]{
     ...,
+    ${videoFields},
     markDefs[]{
       ...,
       ${linkReference}
