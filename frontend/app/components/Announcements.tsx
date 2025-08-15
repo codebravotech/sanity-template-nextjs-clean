@@ -37,7 +37,6 @@ export default function Announcements({ block, pageId, pageType }: Announcements
         {announcements?.map((announcement) => {
           const { category, title, summary, button, image, date } =
             announcement;
-          const pageDestination = button?.page?.slug?.current || "home";
 
           return (
             <div
@@ -70,10 +69,10 @@ export default function Announcements({ block, pageId, pageType }: Announcements
               <div className="text-lg font-bold">{title}</div>
               <div className="text-xs">{summary}</div>
               <ResolvedLink
-                link={{ linkType: "page", page: pageDestination }}
+                link={button?.link}
                 className="text-[#f50] underline text-sm"
               >
-                {button?.label}
+                {button?.buttonText}
               </ResolvedLink>
             </div>
           );

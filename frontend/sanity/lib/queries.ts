@@ -67,7 +67,7 @@ export const getPageQuery = defineQuery(`
         ${linkFields},
         button {
           ...,
-          page->
+          ${linkFields}
         },
         ${videoBlockFields},
         body[]{
@@ -82,9 +82,9 @@ export const getPageQuery = defineQuery(`
         announcements[] {
           ...,
           button {
-            ...,
-            page->
-          }
+          ...,
+          ${linkFields}
+        }
         }
       },
       _type == "contactForm" => {
