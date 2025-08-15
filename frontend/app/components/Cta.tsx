@@ -15,7 +15,6 @@ type CtaProps = {
 };
 
 export default function CTA({ block }: CtaProps) {
-  const pageDestination = block.button?.page?.slug?.current || "home";
   const { heading, eyebrow, body = [], button, image, video, theme } = block;
   const {
     customBackgroundColor,
@@ -23,7 +22,7 @@ export default function CTA({ block }: CtaProps) {
     customButtonBgColor,
     customButtonTextColor,
   } = theme || {};
-  const themeName = stegaClean(theme?.themeName) || 'light';
+  const themeName = stegaClean(theme?.themeName) || "light";
 
   let backgroundColor, textColor, buttonBgColor, buttonTextColor;
   switch (themeName) {
@@ -83,27 +82,35 @@ export default function CTA({ block }: CtaProps) {
     >
       <div className="flex flex-col gap-6 justify-center">
         <div className="max-w-xl flex flex-col gap-3 ">
-          {eyebrow && <h2 className="text-sm tracking-tight opacity-70">{eyebrow}</h2>}
+          {eyebrow && (
+            <h2 className="text-sm tracking-tight opacity-70">{eyebrow}</h2>
+          )}
           {heading && (
             <h2 className="text-3xl font-bold tracking-tight sm:text-4xl mb-4">
               {heading}
             </h2>
           )}
-          {body && <CustomPortableText value={body as PortableTextBlock[]} themeName={themeName} customTextColor={textColor} />}
+          {body && (
+            <CustomPortableText
+              value={body as PortableTextBlock[]}
+              themeName={themeName}
+              customTextColor={textColor}
+            />
+          )}
         </div>
 
         <Suspense fallback={null}>
-          {button?.label && pageDestination && (
-            <div
-              className="flex items-center gap-x-6 lg:mt-0 lg:flex-shrink-0"
-            >
+          {button?.buttonText && button?.link && (
+            <div className="flex items-center gap-x-6 lg:mt-0 lg:flex-shrink-0">
               <ResolvedLink
-                link={{ linkType: "page", page: pageDestination }}
+                link={button?.link}
                 className="rounded-lg flex gap-2 mr-6 items-center hover:scale-110 py-3 px-6 transition-colors duration-200"
-                style={{ backgroundColor: buttonBgColor, color: buttonTextColor }}
-
+                style={{
+                  backgroundColor: buttonBgColor,
+                  color: buttonTextColor,
+                }}
               >
-                {button?.label}
+                {button?.buttonText}
               </ResolvedLink>
             </div>
           )}

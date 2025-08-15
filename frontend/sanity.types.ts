@@ -145,13 +145,8 @@ export type VideoBlock = {
 
 export type Button = {
   _type: "button";
-  label?: string;
-  page?: {
-    _ref: string;
-    _type: "reference";
-    _weak?: boolean;
-    [internalGroqTypeReferenceTo]?: "page";
-  };
+  buttonText?: string;
+  link?: Link;
 };
 
 export type InfoSection = {
@@ -808,35 +803,9 @@ export type GetPageQueryResult = {
       summary?: string;
       button: {
         _type: "button";
-        label?: string;
-        page: {
-          _id: string;
-          _type: "page";
-          _createdAt: string;
-          _updatedAt: string;
-          _rev: string;
-          name: string;
-          slug: Slug;
-          heading: string;
-          subheading?: string;
-          pageBuilder?: Array<{
-            _key: string;
-          } & Announcements | {
-            _key: string;
-          } & CallToAction | {
-            _key: string;
-          } & InfoSection | {
-            _key: string;
-          } & VideoBlock | {
-            heading: string;
-            body?: BlockContentTextOnly;
-            successMessage?: BlockContentTextOnly;
-            requiredFields: Array<string>;
-            optionalFields?: Array<string>;
-            _type: "contactForm";
-            _key: string;
-          }>;
-        } | null;
+        buttonText?: string;
+        link?: Link;
+        page: null;
       } | null;
       image?: {
         asset?: {
@@ -914,35 +883,9 @@ export type GetPageQueryResult = {
     }> | null;
     button: {
       _type: "button";
-      label?: string;
-      page: {
-        _id: string;
-        _type: "page";
-        _createdAt: string;
-        _updatedAt: string;
-        _rev: string;
-        name: string;
-        slug: Slug;
-        heading: string;
-        subheading?: string;
-        pageBuilder?: Array<{
-          _key: string;
-        } & Announcements | {
-          _key: string;
-        } & CallToAction | {
-          _key: string;
-        } & InfoSection | {
-          _key: string;
-        } & VideoBlock | {
-          heading: string;
-          body?: BlockContentTextOnly;
-          successMessage?: BlockContentTextOnly;
-          requiredFields: Array<string>;
-          optionalFields?: Array<string>;
-          _type: "contactForm";
-          _key: string;
-        }>;
-      } | null;
+      buttonText?: string;
+      link?: Link;
+      page: null;
     } | null;
     image?: {
       asset?: {
